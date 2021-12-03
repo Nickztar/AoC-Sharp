@@ -33,7 +33,74 @@ public class Day_03 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         //Parse instructions
-        
-        return new ValueTask<string>("");
+        var binaryNumbers = _input.Split("\r\n");
+        var splitNumbers = binaryNumbers.Select(x => x.ToCharArray());
+        //Figure out the oxygen generator rating
+        var loopCount = splitNumbers.First().Length;
+        var oxygenResult = "";
+        var co2Result = "";
+        for (int i = 0; i < 2; i++)
+        {
+            var isOxygen = i == 0;
+            var result = "";
+            int idxCheck = 0;
+            List<char[]> currentNumbers = new List<char[]>(splitNumbers);
+            while (true)
+            {
+                
+                var groups = currentNumbers.GroupBy(x => x[idxCheck]);
+                var zeroCount = 0;
+                var oneCount = 0;
+                foreach (var group in groups)
+                {
+                    if (group.Key == '0')
+                        zeroCount = group.Count();
+                    else
+                        oneCount = group.Count();
+                }
+                if (isOxygen)
+                {
+                    //Most common value is prefered
+                    if (oneCount >= zeroCount)
+                    {
+                        currentNumbers.RemoveAll(x => x[idxCheck] == '0');
+                    }
+                    else
+                    {
+                        currentNumbers.RemoveAll(x => x[idxCheck] == '1');
+                    }
+                }
+                else
+                {
+                    //Least common value is prefered
+                    if (zeroCount > oneCount)
+                    {
+                        currentNumbers.RemoveAll(x => x[idxCheck] == '0');
+                    }
+                    else
+                    {
+                        currentNumbers.RemoveAll(x => x[idxCheck] == '1');
+                    }
+                }
+
+                //As there is only one number left, stop;
+                if (currentNumbers.Count == 1)
+                {
+                    result = string.Join("", currentNumbers.First());
+                    break;
+                }
+
+                if (idxCheck == loopCount - 1) break;
+                else idxCheck++;
+            }
+            if (isOxygen)
+                oxygenResult = result;
+            else 
+                co2Result = result;
+        }
+
+        var decimalOxygen = Convert.ToInt32(oxygenResult, 2);
+        var decimalCO2 = Convert.ToInt32(co2Result, 2);
+        return new ValueTask<string>((decimalOxygen * decimalCO2).ToString());
     }
 }
