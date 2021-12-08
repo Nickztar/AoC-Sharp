@@ -90,23 +90,23 @@ public class Day_08 : BaseDay
                 x.Except(nine).Any());
 
             //This would be nice if we just did indexes instead
-            var board = new[] { 
-                (zero, 0), 
-                (one, 1), 
-                (two, 2), 
-                (three, 3), 
-                (four, 4), 
-                (five, 5), 
-                (six, 6), 
-                (seven, 7), 
-                (eight, 8), 
-                (nine, 9)
+            var board = new[] {
+                zero,
+                one,
+                two,
+                three,
+                four,
+                five,
+                six,
+                seven,
+                eight,
+                nine
             };
             //Now just find out what the count is for the output is
             var lineResult = output
                 .Where(x => !string.IsNullOrEmpty(x))
-                .Select(x => 
-                    board.First(n => !n.Item1.Except(x).Any() &&!x.Except(n.Item1).Any()).Item2)
+                .Select(x =>
+                    Array.FindIndex(board, n => !n.Except(x).Any() && !x.Except(n).Any()))
                 .Aggregate(0, (i, n) => i * 10 + n);
             sum += lineResult;
             //Decode what the board looks like by these indexes
